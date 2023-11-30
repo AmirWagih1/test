@@ -1,9 +1,10 @@
 <script>
-// 2023-10-30
-// 2023-11-28
-async function get_data(start, end, time_frame= "Monthly") {
-// Find ticker id?
-data = await fetch(`https://api.investing.com/api/financialdata/historical/6408?start-date=${start}&end-date=${end}&time-frame=${time_frame}&add-missing-rows=false`, {
+// Get ids by searching "instrument_id"
+tickers = {'APPL': 6408}
+async function get_data(ticker, start, end, time_frame) {
+id = tickers[ticker]
+link = `https://api.investing.com/api/financialdata/historical/${id}?start-date=${start}&end-date=${end}&time-frame=${time_frame}&add-missing-rows=false`
+data = await fetch(link, {
   "headers": {
     "accept": "application/json, text/plain, */*",
     "accept-language": "en-US,en;q=0.9",
@@ -23,7 +24,13 @@ data = await fetch(`https://api.investing.com/api/financialdata/historical/6408?
   "credentials": "omit"
 })
 res = await data.json()
-return res
+//console.log(start,end)
+//console.log(link)
+document.open()
+document.write(JSON.stringify(res["data"]))
 }
-document.write(get_data("2023-10-30", "2023-11-28"))
+
+// Test script.html?APPL,2021-01-01,2023-05-10,Monthly
+params = window.location.href.split("?")[1].split(",")
+get_data(params[0], params[1], params[2], params[3])
 </script>
